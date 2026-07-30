@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="336" viewBox="0 0 920 336" role="img" aria-labelledby="ttl dsc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif">
+<title id="ttl">Where the checks fire</title>
+<desc id="dsc">A change passes three gates before it becomes public: the pre-commit hook, the pre-push hook, and GitHub push protection. Any of them can block it. The lower chart shows how much of the repository each one reads. The hooks read only what is passing through them, except on a first push. publishable check reads all of it, and it is what you run before the first push, while a fix is still just an edit.</desc>
+
+<style>
+@media (prefers-color-scheme: dark) {
+  .bg  { fill:   #0d1117 }
+  .ink { fill:   #e6edf3 }
+  .mut { fill:   #9198a1 }
+  .lin { stroke: #7d8590 }
+  .lnf { fill:   #7d8590 }
+  .dgr { fill:   #ff7b72 }
+  .dgs { stroke: #ff7b72 }
+  .acc { fill:   #2ea4ac }
+  .rul { stroke: #30363d }
+  .trf { fill:   #21262d }
+  .mid { fill:   #545c66 }
+}
+</style>
+
+<rect class="bg" x="0" y="0" width="920" height="336" rx="6" fill="#ffffff"/>
+
+<!-- any gate can stop the change -->
+<path class="dgs" d="M196 54V41M452 54V41M672 54V41M196 40.5H716" fill="none" stroke="#cf222e" stroke-width="1.25"/>
+<path class="dgr" d="M722 40.5l-7-3.75v7.5z" fill="#cf222e"/>
+<text class="dgr" x="730" y="45" font-size="14" fill="#cf222e">blocked</text>
+
+<!-- the path a change takes -->
+<path class="lin" d="M44 72H889" fill="none" stroke="#6e7781" stroke-width="1.25"/>
+<path class="lnf" d="M896 72l-8-4.25v8.5z" fill="#6e7781"/>
+
+<g class="ink" fill="#1f2328">
+  <circle cx="62" cy="72" r="4.5"/>
+  <circle cx="330" cy="72" r="4.5"/>
+  <circle cx="552" cy="72" r="4.5"/>
+  <circle cx="856" cy="72" r="4.5"/>
+  <rect x="193.5" y="56" width="5" height="32" rx="2.5"/>
+  <rect x="449.5" y="56" width="5" height="32" rx="2.5"/>
+  <rect x="669.5" y="56" width="5" height="32" rx="2.5"/>
+</g>
+
+<g class="ink" fill="#1f2328" font-size="14" text-anchor="middle">
+  <text x="62"  y="106">edit</text>
+  <text x="196" y="106" font-weight="600" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">pre-commit</text>
+  <text x="330" y="106">commit</text>
+  <text x="452" y="106" font-weight="600" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">pre-push</text>
+  <text x="552" y="106">push</text>
+  <text x="672" y="106" font-weight="600">push protection</text>
+  <text x="856" y="106" font-weight="600">public</text>
+</g>
+
+<g class="mut" fill="#59636e" font-size="12" text-anchor="middle">
+  <text x="196" y="122">your rules</text>
+  <text x="452" y="122">your rules</text>
+  <text x="672" y="122">github, known keys</text>
+</g>
+
+<path class="rul" d="M44 142.5H896" fill="none" stroke="#d8dee4" stroke-width="1"/>
+
+<!-- how much of the repository each one reads -->
+<g class="mut" fill="#59636e" font-size="12">
+  <text x="206" y="170" text-anchor="end">reads</text>
+  <text x="220" y="170">first commit</text>
+  <text x="880" y="170" text-anchor="end">now</text>
+</g>
+
+<g class="trf" fill="#eaeef2">
+  <rect x="220" y="182" width="660" height="12" rx="3"/>
+  <rect x="220" y="212" width="660" height="12" rx="3"/>
+  <rect x="220" y="242" width="660" height="12" rx="3"/>
+  <rect x="220" y="276" width="660" height="12" rx="3"/>
+</g>
+
+<rect class="mid" x="220" y="212" width="602" height="12" rx="3" fill="#9aa4b0"/>
+<text class="mut" x="228" y="208" font-size="12" fill="#59636e">first push only</text>
+
+<g class="ink" fill="#1f2328">
+  <rect x="854" y="182" width="26" height="12" rx="3"/>
+  <rect x="822" y="212" width="58" height="12" rx="3"/>
+  <rect x="822" y="242" width="58" height="12" rx="3"/>
+</g>
+
+<rect class="acc" x="220" y="276" width="660" height="12" rx="3" fill="#0f7d84"/>
+
+<g font-size="14" text-anchor="end">
+  <text class="ink" x="206" y="192" fill="#1f2328" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">pre-commit</text>
+  <text class="ink" x="206" y="222" fill="#1f2328" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">pre-push</text>
+  <text class="ink" x="206" y="252" fill="#1f2328">push protection</text>
+  <text class="acc" x="206" y="286" fill="#0f7d84" font-weight="600" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">publishable check</text>
+</g>
+
+<text class="mut" x="220" y="308" font-size="12" fill="#59636e">run this before the first push, while a fix is still just an edit</text>
+</svg>

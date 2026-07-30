@@ -67,47 +67,31 @@ Keep the rules file out of your repositories. It lists the strings you most want
 
 With no rules file, `publishable` refuses to scan. A security tool that returns clean because it was misconfigured is worse than none.
 
-## Starting clean
+## Publishable by default
+
+The usual order is build first, clean up before publishing. That order is why most side projects stay private. The cleanup is unbounded, nobody can verify it, and it falls due exactly when you have stopped caring.
+
+Invert it. Decide at the start that your personal layer lives outside the repository, and the repository carries only questions, examples, and references. Publishing then costs nothing, because there is nothing to take out. `check` exists to catch the places you got that wrong, and the separation itself does the work.
+
+The dividing line: **anything that changes when the person changes is policy** — your name, your paths, your keys, your taste, your examples — and belongs in a config file, a first-run prompt, or a secret manager. Anything that survives the person is mechanism, and it ships.
+
+The whole test fits in one sentence, borrowed from [Twelve-Factor](https://12factor.net/config): could this repository be made public right now, with nothing removed?
 
 ```sh
 publishable init my-app --lang python
 ```
 
-Scaffolds a repository that needs no cleanup before publishing: a `.gitignore` covering the files that leak most often, a config example plus a loader reading from `~/.config/<name>/`, [`docs/adr/`](https://adr.github.io) for decisions, a README skeleton, and CI that fails when the README stops being true.
+Scaffolds a repository built that way: a `.gitignore` covering the files that leak most often, a config example plus a loader reading from `~/.config/<name>/`, [`docs/adr/`](https://adr.github.io) for decisions, a README skeleton, and CI that fails when the README stops being true. It asks once for the values that are yours and stores them outside the repository. It will not invent a default author.
 
-It asks once for the values that are yours and stores them in `~/.config/publishable/config`. It will not invent a default author.
-
-The rule underneath: **anything that changes when the person changes belongs outside the repository.** The repository carries the questions. Your machine carries the answers.
+This repository is built the same way, which is the only reason to trust it. Its own rules are configuration; only their shape ships.
 
 ## Where the checks fire
 
-```mermaid
-%%{init:{'theme':'base','themeVariables':{'fontFamily':'ui-monospace,SFMono-Regular,Menlo,Consolas,monospace','fontSize':'13px','lineColor':'#7d8590'}}}%%
-flowchart TD
-    E["edit"]:::step --> PC{"pre-commit"}:::gate
-    PC -- match --> X1["blocked"]:::bad
-    PC -- clean --> CM["commit"]:::step
-    CM --> PP{"pre-push"}:::gate
-    PP -- match --> X2["blocked"]:::bad
-    PP -- clean --> GH{"push protection"}:::gate
-    GH -- known key --> X3["blocked"]:::bad
-    GH -- clean --> OK["public"]:::good
+![Where the checks fire. A change passes the pre-commit hook, the pre-push hook and GitHub push protection before it is public, and any of them can block it. Each hook reads only what is passing through it; publishable check reads the whole repository.](docs/pipeline.svg)
 
-    CM -.-> HIST[("full history")]:::store
-    HIST -.-> CHK["publishable check"]:::tool
-    CHK -. before first push .-> OK
+Each hook reads only what is passing through it, so anything already in your history sails past. `publishable check` reads all of it, and you run it before the first push, while a fix is still just an edit.
 
-    classDef step fill:#1c2128,stroke:#6e7681,color:#e6edf3
-    classDef gate fill:#0d2b45,stroke:#58a6ff,color:#cae8ff
-    classDef bad fill:#3d1418,stroke:#f85149,color:#ffa198
-    classDef good fill:#0f2f1a,stroke:#3fb950,color:#7ee787
-    classDef tool fill:#2d2211,stroke:#d29922,color:#f0d58c
-    classDef store fill:#22272e,stroke:#8b949e,color:#adbac7
-```
-
-Each gate sees less than the one before it. The hooks only see what is passing through them right now, which is why they cannot catch what is already in your history. `publishable check` is the one that reads everything, and it is what you run before a first push.
-
-[GitHub's push protection](https://docs.github.com/en/code-security/secret-scanning/introduction/about-push-protection) is the only layer no local bypass reaches, and it only knows about known provider patterns. It stops a Stripe key. It will never stop your home directory path.
+[GitHub's push protection](https://docs.github.com/en/code-security/secret-scanning/introduction/about-push-protection) is the only layer no local bypass reaches, and it only knows known provider patterns. It stops a Stripe key. It will never stop your home directory path.
 
 ## Why shouldn't I use this?
 
