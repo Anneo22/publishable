@@ -33,9 +33,9 @@ publishable check ~/code/my-app
 
 Findings split into two kinds, and the split decides what you do.
 
-**Working tree** — in the files as they are now. Edit, commit, done.
+**Working tree.** In the files as they are now. Edit, commit, done.
 
-**History** — in commits. Deleting the file does nothing, and rewriting history is unreliable: a fork keeps the old objects, [GitHub will not remove data from someone else's fork](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository), and rewritten commits stay reachable by SHA. For a repository already public, rotate and disclose. For one that is not, export the clean tree into a fresh repository with one initial commit.
+**History.** In commits. Deleting the file does nothing, and rewriting history is unreliable: a fork keeps the old objects, [GitHub will not remove data from someone else's fork](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository), and rewritten commits stay reachable by SHA. For a repository already public, rotate and disclose. For one that is not, export the clean tree into a fresh repository with one initial commit.
 
 Exit codes: `0` clean, `1` findings, `2` usage error. Output is readable in a terminal and machine-parseable when piped, so `publishable check . | grep BLOCKING` works with no flag.
 
@@ -69,7 +69,7 @@ The usual order is build first, clean up before publishing. That order is why mo
 
 Invert it. Decide at the start that your personal layer lives outside the repository, and the repository carries only questions, examples, and references. Publishing then costs nothing, because there is nothing to take out. `check` exists to catch the places you got that wrong, and the separation itself does the work.
 
-The dividing line: **anything that changes when the person changes is policy** — your name, your paths, your keys, your taste, your examples — and belongs in a config file, a first-run prompt, or a secret manager. Anything that survives the person is mechanism, and it ships.
+The dividing line: **anything that changes when the person changes is policy.** Your name, your paths, your keys, your taste, your examples. All of it belongs in a config file, a first-run prompt, or a secret manager. Anything that survives the person is mechanism, and it ships.
 
 The whole test fits in one sentence, borrowed from [Twelve-Factor](https://12factor.net/config): could this repository be made public right now, with nothing removed?
 
@@ -80,6 +80,8 @@ publishable init my-app --lang python
 Scaffolds a repository built that way: a `.gitignore` covering the files that leak most often, a config example plus a loader reading from `~/.config/<name>/`, [`docs/adr/`](https://adr.github.io) for decisions, a README skeleton, and CI that fails when the README stops being true. It asks once for the values that are yours and stores them outside the repository. It will not invent a default author.
 
 This repository is built the same way, which is the only reason to trust it. Its own rules are configuration; only their shape ships.
+
+There is a second reason to care, beyond your own repositories. **Most small useful things never get published**, not because anyone decided against it but because the cleanup was unbounded and the moment passed. So they get rebuilt, from scratch, a thousand times over, and every rebuild costs somebody hours they will not get back. Making publishing cost nothing is the part of that problem an individual can actually fix.
 
 ## Why shouldn't I use this?
 
