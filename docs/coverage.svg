@@ -1,160 +1,116 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="852" viewBox="0 0 920 852" role="img" aria-labelledby="ttl dsc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="830" height="700" viewBox="0 0 830 700" role="img" aria-labelledby="ttl dsc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif">
 <title id="ttl">What each layer can catch, and why the misses happen</title>
-<desc id="dsc">A grid. Four things that can leak out of a repository are set against the four layers that might stop them: the pre-commit hook and the pre-push hook, which run with rules you wrote; GitHub push protection, which runs with GitHub's rules; and publishable check, a command-line tool you run yourself that checks a git repository for things you would not want public. A green dot means the layer stops it, with the rules named under each column heading. A red ring means it gets through, with the reason written underneath. An AWS or Stripe key is stopped by all four. A home path or an internal host or an agent's working note gets past GitHub push protection, because push protection has no pattern for them. The same path, already sitting in an older commit, gets past the pre-commit hook and, after your first push, the pre-push hook too, because it is outside the change they are handed, and past push protection for the pattern reason. publishable check is the only column that stops all four, and a final row asks whether each layer runs without you, answered in words rather than marks: the hooks run on every commit or push, and publishable check runs only when you remember. A note records that on a very first push pre-push is handed the whole history and does catch that bottom row, and that a repository you are about to make public has already been pushed, so it is past that case. The closing argument: nothing here runs at the moment you make the repository public, since that is a settings change rather than a push, so you run publishable check yourself beforehand, and it covers that moment rather than replacing the hooks. Every column, publishable check included, only finds what someone wrote a pattern for, and nothing here catches a fact nobody described. Against the hooks publishable check wins one row and it wins it on reach rather than intelligence, and against push protection it wins three rows, all three for the single reason that push protection only knows key formats.</desc>
+<desc id="dsc">A grid. Four things that can leak out of a repository are set against the four layers that might stop them: the pre-commit hook and the pre-push hook, which publishable installs for you; GitHub push protection; and publishable check, the command you run yourself. Two rows above the grid describe the layers rather than the leaks. The first asks whether each runs without you: the hooks fire on every commit or every push, push protection on every push, and publishable check only when you remember. The second records how each is skipped: the two hooks with the no-verify flag, push protection by dismissing it, and publishable check by simply not running it. In the grid below, a green dot means the layer stops it and a red ring means it gets through, with the reason written underneath. An AWS or Stripe key is stopped by all four. A home path or a private host gets past push protection, because push protection knows key formats only. An agent's working note gets past both hooks, which have no check for it, and past push protection for the same key-formats reason. The same path already sitting in an older commit gets past both hooks because it is too far back for them, and past push protection again. publishable check is the only column that stops all four. A note records that on a first push pre-push is handed the whole history, and that a repository you are about to publish is long past that. The closing argument: every column here, publishable check included, only finds what someone wrote a pattern for. It just ships a check for those file names that the hooks do not, and reads further back. Nothing here catches a fact nobody described.</desc>
 
 <style>
 .m{font-family:ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
 </style>
 
-<rect x="0" y="0" width="920" height="852" rx="10" fill="#0d1117"/>
+<rect x="0" y="0" width="830" height="700" rx="10" fill="#0d1117"/>
 
-<text x="34" y="46" font-size="21" font-weight="600" fill="#e6edf3">What each layer can catch</text>
-<text x="34" y="68" font-size="12.5" fill="#9198a1"><tspan class="m">publishable</tspan> is a command-line tool that checks a git repository for things you would not want public.</text>
-<text x="34" y="87" font-size="12.5" fill="#9198a1">Filled green: it ships with the rule. Hollow green: only if you wrote that rule. Red: it gets through, reason below.</text>
+<text x="30" y="42" font-size="22" font-weight="600" fill="#e6edf3">What each layer can catch</text>
+<text x="30" y="67" font-size="13.5" fill="#b4bdc7"><tspan class="m">publishable</tspan> is a command-line tool that checks a git repository for things you would not want public.</text>
+<text x="30" y="88" font-size="13.5" fill="#b4bdc7">Green dot: the layer stops it. Red ring: it gets through, reason underneath.</text>
 
-<!-- the one column you have to run yourself sits apart -->
-
-<text x="513" y="100" text-anchor="middle" font-size="12" fill="#9198a1">these three run on their own</text>
-<text x="806" y="100" text-anchor="middle" font-size="12" fill="#2ea4ac">this one you run by hand</text>
-<path d="M320 110V106H706V110" fill="none" stroke="#3d444d" stroke-width="1"/>
-<path d="M740 110V106H872V110" fill="none" stroke="#2a6b70" stroke-width="1"/>
+<text x="405" y="114" text-anchor="middle" font-size="13.5" fill="#b4bdc7">installed by publishable</text>
+<text x="590" y="114" text-anchor="middle" font-size="13.5" fill="#b4bdc7">GitHub's</text>
+<path d="M292 126V122H517V126" fill="none" stroke="#3d444d" stroke-width="1"/>
 
 <!-- ============ the four layers ============ -->
-<g text-anchor="middle" font-size="13" font-weight="600" fill="#e6edf3">
-  <text class="m" x="366" y="124">pre-commit</text>
-  <text class="m" x="506" y="124">pre-push</text>
-  <text x="646" y="124">push protection</text>
-  <text class="m" x="806" y="124" fill="#2ea4ac">publishable check</text>
+<g text-anchor="middle" font-size="13.5" font-weight="600" fill="#e6edf3">
+  <text class="m" x="340" y="140">pre-commit</text>
+  <text class="m" x="468" y="140">pre-push</text>
+  <text x="590" y="140">push protection</text>
+  <text class="m" x="726" y="140" font-size="12.5" fill="#2ea4ac">publishable check</text>
 </g>
 
-<!-- whose rules every green dot below is using, said where the eye lands -->
-<g text-anchor="middle" font-size="10.5" fill="#8b949e">
-  <text x="366" y="141">with rules you wrote</text>
-  <text x="506" y="141">with rules you wrote</text>
-  <text x="646" y="141">with GitHub's rules</text>
-  <text x="806" y="141">with the tool's rules</text>
+<!-- two rows about the layers themselves, kept together and above the grid -->
+<rect x="30" y="152" width="770" height="64" rx="5" fill="#12181f"/>
+<g text-anchor="end" font-size="13.5" fill="#9aa4b0">
+  <text x="280" y="178">does it run without you?</text>
+  <text x="280" y="204">how you skip it</text>
+</g>
+<g text-anchor="middle" font-size="13.5" fill="#c3ccd6">
+  <text x="340" y="178">on every commit</text>
+  <text x="468" y="178">on every push</text>
+  <text x="590" y="178">on every push</text>
+  <text x="726" y="178" fill="#ff7b72">when you remember</text>
+</g>
+<g text-anchor="middle" font-size="13.5" fill="#b4bdc7">
+  <text class="m" x="340" y="204">--no-verify</text>
+  <text class="m" x="468" y="204">--no-verify</text>
+  <text x="590" y="204">dismiss it</text>
+  <text x="726" y="204">you don't run it</text>
 </g>
 
-<g fill="#12181f">
-  <rect x="34" y="154" width="852" height="20" rx="4"/>
-  <rect x="34" y="176" width="852" height="20" rx="4"/>
-</g>
+<path d="M30 234H800" fill="none" stroke="#21262d" stroke-width="1"/>
 
-<g text-anchor="end" font-size="11" fill="#7d8590">
-  <text x="286" y="169">what it reads</text>
-  <text x="286" y="191">how you skip it</text>
-</g>
-
-<g text-anchor="middle" font-size="11" fill="#9198a1">
-  <text x="366" y="169">the staged diff</text>
-  <text x="506" y="169">the commits you push</text>
-  <text x="646" y="169">the commits you push</text>
-  <text x="806" y="169">all commits + working tree</text>
-
-  <text class="m" x="366" y="191">--no-verify</text>
-  <text class="m" x="506" y="191">--no-verify</text>
-  <text x="646" y="191">dismiss it on GitHub</text>
-  <text x="806" y="191">you just don't run it</text>
-</g>
-
-<path d="M34 212H886" fill="none" stroke="#21262d" stroke-width="1"/>
-
-<text x="286" y="234" text-anchor="end" font-size="12.5" font-weight="600" fill="#c3ccd6">What could leak</text>
+<text x="280" y="256" text-anchor="end" font-size="13.5" font-weight="600" fill="#c3ccd6">What could leak</text>
 
 <!-- ============ the grid ============ -->
 <g fill="#12181f">
-  <rect x="34" y="242" width="852" height="62" rx="5"/>
-  <rect x="34" y="308" width="852" height="62" rx="5"/>
-  <rect x="34" y="374" width="852" height="62" rx="5"/>
+  <rect x="30" y="264" width="770" height="62" rx="5"/>
+  <rect x="30" y="332" width="770" height="62" rx="5"/>
+  <rect x="30" y="400" width="770" height="62" rx="5"/>
 </g>
-<rect x="34" y="440" width="852" height="74" rx="5" fill="#171d26"/>
+<rect x="30" y="468" width="770" height="66" rx="5" fill="#171d26"/>
 
-<path d="M726 112V590" fill="none" stroke="#30363d" stroke-width="1"/>
+<path d="M656 130V534" fill="none" stroke="#262c34" stroke-width="1"/>
 
 <g text-anchor="end">
-  <g font-size="13.5" font-weight="600" fill="#e6edf3">
-    <text x="286" y="266">an AWS or Stripe key</text>
-    <text x="286" y="332">your home path, or an internal host</text>
-    <text x="286" y="398">an agent's working note</text>
-    <text x="286" y="464">the same path, already committed</text>
+  <g font-size="14" font-weight="600" fill="#e6edf3">
+    <text x="280" y="288">a provider key</text>
+    <text x="280" y="356">your home path</text>
+    <text x="280" y="424">an agent's working note</text>
+    <text x="280" y="494">that path, in an older commit</text>
   </g>
-  <g font-size="11" fill="#8b949e">
-    <text x="286" y="283">a format scanners know</text>
-    <text x="286" y="349"><tspan class="m">/Users/alice/</tspan> — your username is in it</text>
-    <text x="286" y="415"><tspan class="m">HANDOFF.md</tspan>, a plan file</text>
-    <text x="286" y="481">you deleted the file, the commit stayed</text>
+  <g font-size="13.5" fill="#b4bdc7">
+    <text x="280" y="306">a format scanners already know</text>
+    <text x="280" y="374"><tspan class="m">/Users/alice/</tspan>, or a private host</text>
+    <text x="280" y="442"><tspan class="m">HANDOFF.md</tspan>, <tspan class="m">CHANGES.log</tspan></text>
+    <text x="280" y="512">you deleted it, the commit stayed</text>
   </g>
 </g>
 
 <!-- stops it -->
-<!-- ships with the rule -->
 <g fill="#3fb950">
-  <circle cx="646" cy="270" r="9"/><circle cx="806" cy="270" r="9"/>
-  <circle cx="806" cy="336" r="9"/>
-  <circle cx="806" cy="402" r="9"/>
-  <circle cx="806" cy="468" r="9"/>
-</g>
-<!-- stops it only if you wrote that rule yourself -->
-<g fill="none" stroke="#2b8a3e" stroke-width="1.75">
-  <circle cx="366" cy="270" r="6.5"/><circle cx="506" cy="270" r="6.5"/>
-  <circle cx="366" cy="336" r="6.5"/><circle cx="506" cy="336" r="6.5"/>
-  <circle cx="366" cy="402" r="6.5"/><circle cx="506" cy="402" r="6.5"/>
+  <circle cx="340" cy="283" r="9"/><circle cx="468" cy="283" r="9"/>
+  <circle cx="590" cy="283" r="9"/><circle cx="726" cy="283" r="9"/>
+  <circle cx="340" cy="351" r="9"/><circle cx="468" cy="351" r="9"/>
+  <circle cx="726" cy="351" r="9"/>
+  <circle cx="726" cy="419" r="9"/>
+  <circle cx="726" cy="489" r="9"/>
 </g>
 
 <!-- gets through, with the reason under it -->
 <g fill="none" stroke="#ff7b72" stroke-width="2.25">
-  <circle cx="646" cy="336" r="8"/>
-  <circle cx="646" cy="402" r="8"/>
-  <circle cx="366" cy="468" r="8"/>
-  <circle cx="506" cy="468" r="8"/>
-  <circle cx="646" cy="468" r="8"/>
+  <circle cx="590" cy="351" r="8"/>
+  <circle cx="340" cy="419" r="8"/><circle cx="468" cy="419" r="8"/><circle cx="590" cy="419" r="8"/>
+  <circle cx="340" cy="489" r="8"/><circle cx="468" cy="489" r="8"/><circle cx="590" cy="489" r="8"/>
 </g>
 
-<g text-anchor="middle" font-size="11" fill="#8b949e">
-  <text x="646" y="360">no pattern for it</text>
-  <text x="646" y="426">no pattern for it</text>
-  <text x="366" y="492">out of scope</text>
-  <text x="506" y="492">out of scope</text>
-  <text x="506" y="505">after your first push</text>
-  <text x="646" y="492">no pattern for it</text>
+<g text-anchor="middle" font-size="13.5" fill="#b4bdc7">
+  <text x="590" y="377">key formats only</text>
+  <text x="340" y="445">no check for it</text>
+  <text x="468" y="445">no check for it</text>
+  <text x="590" y="445">key formats only</text>
+  <text x="340" y="515">too far back</text>
+  <text x="468" y="515">too far back <tspan fill="#adb6c0">*</tspan></text>
+  <text x="590" y="515">key formats only</text>
 </g>
 
-
-<path d="M34 520H886" fill="none" stroke="#21262d" stroke-width="1"/>
-<rect x="34" y="528" width="852" height="62" rx="5" fill="#12181f"/>
-<text x="286" y="552" text-anchor="end" font-size="13.5" font-weight="600" fill="#e6edf3">does it run without you?</text>
-<text x="286" y="569" text-anchor="end" font-size="11" fill="#8b949e">the row the tool loses</text>
-<g text-anchor="middle" font-size="12" fill="#c3ccd6">
-  <text x="366" y="560">on every commit</text>
-  <text x="506" y="560">on every push</text>
-  <text x="646" y="560">on every push</text>
-  <text x="806" y="560" fill="#ff7b72">only when you remember</text>
+<g font-size="14" fill="#b4bdc7">
+  <text x="30" y="566"><tspan fill="#adb6c0">*</tspan> Except on a first push, when <tspan class="m">pre-push</tspan> is handed the whole history.</text>
+  <text x="30" y="585">A repository you are about to publish is long past that.</text>
 </g>
 
-<g font-size="11.5" fill="#8b949e">
-  <text x="34" y="608">Why that cell says <tspan fill="#c3ccd6">after your first push</tspan>: a first push has no remote branch to compare against, so <tspan class="m">pre-push</tspan> is handed everything.</text>
-  <text x="34" y="624">A repository you are about to publish is long past that.</text>
-</g>
-
-<path d="M34 642H886" fill="none" stroke="#21262d" stroke-width="1"/>
+<path d="M30 606H800" fill="none" stroke="#21262d" stroke-width="1"/>
 
 <!-- ============ the point ============ -->
 
-<text x="34" y="668" font-size="15" fill="#e6edf3">Nothing here runs at the moment you make the repository public. That is a settings change, not a push.</text>
-
-<rect x="34" y="680" width="206" height="34" rx="4" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-<text class="m" x="50" y="702" font-size="14.5" fill="#6e7681">$ <tspan fill="#3fc0c9">publishable check</tspan></text>
-
-<text x="258" y="690" font-size="13" fill="#c3ccd6">Run it last, in the repository, just before you flip it to public.</text>
-<text x="258" y="707" font-size="11.5" fill="#8b949e"><tspan class="m">check</tspan> is a subcommand of <tspan class="m">publishable</tspan>.</text>
-
-<g font-size="13.5" fill="#c3ccd6">
-  <text x="34" y="744">Every column here, <tspan class="m">publishable check</tspan> included, only finds what someone wrote a pattern for.</text>
-  <text x="34" y="763">Nothing here catches a fact nobody described.</text>
-</g>
-
-<g font-size="12.5" fill="#a9b2bd">
-  <text x="34" y="788">Against the hooks: count a hollow green as a loss and it wins all four; count it as a win and it wins the already-committed row alone.</text>
-  <text x="34" y="804">Against push protection it wins three rows, all three for the same reason: push protection only knows key formats.</text>
+<g font-size="14" fill="#c3ccd6">
+  <text x="30" y="632">Every column here, <tspan class="m">publishable check</tspan> included, only finds what someone wrote a pattern for.</text>
+  <text x="30" y="653">It just ships a check for those file names that the hooks do not, and reads further back.</text>
+  <text x="30" y="674">Nothing here catches a fact nobody described.</text>
 </g>
 </svg>

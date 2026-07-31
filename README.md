@@ -1,8 +1,6 @@
 # publishable
 
-`publishable` checks whether a git repository can be made public. It reads your whole history, because a file you deleted last month is still public the moment you push.
-
-It looks for what a secret scanner skips: absolute home paths, real names, internal hostnames, and the working notes a coding agent leaves behind.
+`publishable` checks whether a git repository can be made public, and splits what it finds into what you can still edit and what is already past editing.
 
 [![checks](https://github.com/Anneo22/publishable/actions/workflows/checks.yml/badge.svg)](https://github.com/Anneo22/publishable/actions/workflows/checks.yml)
 
@@ -10,11 +8,9 @@ It looks for what a secret scanner skips: absolute home paths, real names, inter
 
 ## Why
 
-[gitleaks](https://github.com/gitleaks/gitleaks) will find an AWS key. It will not tell you that `settings.py` used to contain `/Users/alice/`, that a fixture names a real person, or that your agent left a hand-off journal in `HANDOFF.md` describing how you work.
+I have projects that would be useful to other people and are still private, and not one of them is private for a good reason. They are private because I could not answer one question fast enough to act on it: is there still something of mine in here, anywhere in the history? By hand that question is unbounded, so the answer stayed no.
 
-That is where most small-project leaks come from. None of it is a credential, so nothing flags it, and all of it is permanent once pushed.
-
-![What each layer can catch. Four checks compared across five kinds of leak: a provider key, a personal path, an agent working note, a path already committed, and whether the check runs without you. publishable check is the only one that catches an already-committed path, and the only one that does not run on its own.](docs/coverage.svg)
+![What each layer can catch. Four layers compared across four kinds of leak: a provider key, a home path, an agent's working note, and that same path once it sits in an older commit. GitHub push protection knows key formats only. The two git hooks have no check for a working note and cannot reach an old commit. publishable check is the only column that stops all four, and the only one that does not run on its own.](docs/coverage.svg)
 
 ## Install
 
@@ -23,7 +19,7 @@ git clone https://github.com/Anneo22/publishable.git
 cd publishable && ./install.sh
 ```
 
-Needs `git` and [gitleaks](https://github.com/gitleaks/gitleaks). [`gh`](https://cli.github.com) and `jq` are optional and only add repository-description checks.
+Needs `git` and [gitleaks](https://github.com/gitleaks/gitleaks), which does the scanning underneath. [`gh`](https://cli.github.com) and `jq` are optional and only add repository-description checks.
 
 `install.sh` puts the hooks in `~/.git-template` and points [`init.templateDir`](https://git-scm.com/docs/git-init#Documentation/git-init.txt---templatelttemplate-directorygt) at it, so everything you clone or create from then on inherits them. It prints what it changed and will not overwrite an existing template silently.
 
@@ -45,13 +41,11 @@ Exit codes: `0` clean, `1` findings, `2` usage error. Output is readable in a te
 
 A repository with no commits reports `history UNSCANNED`. There is nothing to scan yet, and calling that clean would be the most dangerous kind of wrong answer.
 
+![Where the checks fire. Four checks sit between an edit and a public repository, drawn against a history where a home path went into a commit made before any hook existed. The pre-commit hook is handed only what is not committed, and the pre-push hook and GitHub push protection are handed the same thing as each other, the commits you are pushing, so the old commit is out of range for all three. publishable check is handed all of it and catches the leak. Flipping a repository to public fires none of the three automatic checks.](docs/pipeline.svg)
+
 ## Your rules
 
-`publishable` ships no personal patterns, because yours are not mine.
-
-```sh
-cp personal.toml.example ~/.config/gitleaks/personal.toml
-```
+`publishable` ships no personal patterns, because yours are not mine. `install.sh` leaves a starter file at `~/.config/publishable/personal.toml` with the placeholders still in it, and marks it not ready.
 
 It [extends](https://github.com/gitleaks/gitleaks#configuration) the default gitleaks ruleset, so you keep every credential pattern and add your own:
 
@@ -65,9 +59,9 @@ keywords = ["/Users/YOURNAME"]
 
 Write `description` as the fix. You read it at the moment you are blocked, and "replace this with `$HOME`" gets acted on where "personal path detected" gets overridden.
 
-Keep the rules file out of your repositories. It lists the strings you most want to keep private.
+Replace every placeholder, then set `rules_ready=true` in `~/.config/publishable/config`. Until you do, `publishable` refuses to scan and so do the hooks, because a security tool that returns clean while it is still holding the example rules is worse than none.
 
-With no rules file, `publishable` refuses to scan. A security tool that returns clean because it was misconfigured is worse than none.
+Keep the rules file out of your repositories. It lists the strings you most want to keep private.
 
 ## Publishable by default
 
@@ -87,15 +81,8 @@ Scaffolds a repository built that way: a `.gitignore` covering the files that le
 
 This repository is built the same way, which is the only reason to trust it. Its own rules are configuration; only their shape ships.
 
-## Where the checks fire
-
-![Where the checks fire. Four checks sit between an edit and a public repository, shown against a history where a personal path went into an old commit before any hook existed. The three automatic checks are each handed only part of that history and miss it; publishable check reads all of it and catches it.](docs/pipeline.svg)
-
-[GitHub's push protection](https://docs.github.com/en/code-security/secret-scanning/introduction/about-push-protection) is the only layer no local flag skips, though it can be dismissed through GitHub's web flow, and it only knows known provider formats. It stops a Stripe key. It will never stop your home directory path.
-
 ## Why shouldn't I use this?
 
-- **It only finds what you describe.** The rules are regexes. A personal fact you never wrote a pattern for is invisible, and nothing in this space solves that.
 - **It is not a credential scanner.** It extends gitleaks rather than replacing it. For verified secret detection add [TruffleHog](https://github.com/trufflesecurity/trufflehog).
 - **It cannot help after the fact.** Once history is public, forks make it permanent. This is for the moment before the first push.
 - **Rules need tuning.** Too broad and you override it constantly, which is how guards get uninstalled. Start narrow.
