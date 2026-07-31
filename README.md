@@ -14,6 +14,8 @@ It looks for what a secret scanner skips: absolute home paths, real names, inter
 
 That is where most small-project leaks come from. None of it is a credential, so nothing flags it, and all of it is permanent once pushed.
 
+![What each layer can catch. Four checks compared across five kinds of leak: a provider key, a personal path, an agent working note, a path already committed, and whether the check runs without you. publishable check is the only one that catches an already-committed path, and the only one that does not run on its own.](docs/coverage.svg)
+
 ## Install
 
 ```sh
@@ -87,11 +89,9 @@ This repository is built the same way, which is the only reason to trust it. Its
 
 ## Where the checks fire
 
-![Where the checks fire. A change passes the pre-commit hook, the pre-push hook and GitHub push protection before it is public, and any of them can block it. Each hook reads only what is passing through it; publishable check reads the whole repository.](docs/pipeline.svg)
+![Where the checks fire. Four checks sit between an edit and a public repository, shown against a history where a personal path went into an old commit before any hook existed. The three automatic checks are each handed only part of that history and miss it; publishable check reads all of it and catches it.](docs/pipeline.svg)
 
-Each hook reads only what is passing through it, so anything already in your history sails past. `publishable check` reads all of it, and you run it before the first push, while a fix is still just an edit.
-
-[GitHub's push protection](https://docs.github.com/en/code-security/secret-scanning/introduction/about-push-protection) is the only layer no local bypass reaches, and it only knows known provider patterns. It stops a Stripe key. It will never stop your home directory path.
+[GitHub's push protection](https://docs.github.com/en/code-security/secret-scanning/introduction/about-push-protection) is the only layer no local flag skips, though it can be dismissed through GitHub's web flow, and it only knows known provider formats. It stops a Stripe key. It will never stop your home directory path.
 
 ## Why shouldn't I use this?
 

@@ -1,93 +1,195 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="336" viewBox="0 0 920 336" role="img" aria-labelledby="ttl dsc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif">
-<title id="ttl">Where the checks fire</title>
-<desc id="dsc">A change passes three gates before it becomes public: the pre-commit hook, the pre-push hook, and GitHub push protection. Any of them can block it. The lower chart shows how much of the repository each one reads. The hooks read only what is passing through them, except on a first push. publishable check reads all of it, and it is what you run before the first push, while a fix is still just an edit.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="752" viewBox="0 0 920 752" role="img" aria-labelledby="ttl dsc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif">
+<title id="ttl">Where the checks fire, and how much of the repository each one is handed</title>
+<desc id="dsc">Four checks sit between an edit and a public repository: the pre-commit hook, the pre-push hook, GitHub push protection, and publishable check, which you run yourself by hand while the other three run on their own. Along the top they are drawn in the order they fire, over a line running edit, commit, push, make it public. Making the repository public is a settings change rather than a push, so none of the first three run at that moment. Below, the case drawn is a personal path that went into an old commit before any hook existed: the file was deleted, the commit stayed. The history is drawn as twelve commits, oldest on the left, split by a wide gap into eight already pushed and four not pushed yet, with a diamond for work that is not committed yet. Each check is then drawn as a shaded span over those same commits, showing exactly what it is handed. The pre-commit hook is handed only the change you are committing, and the pre-push hook and push protection are handed only the four commits you are pushing, so the old commit sits outside all three spans and all three miss it. publishable check is handed every commit plus everything not committed yet, so it is the one that catches it. Two notes qualify the table: on a very first push there is no remote branch to compare against, so pre-push is handed the whole history and does catch this once, and GitHub's secret scanning, a separate feature, sweeps a public repository's history but only for key formats it knows. The closing line: flipping a repository to public fires none of the three automatic checks, so run publishable check yourself before you flip it.</desc>
 
 <style>
-@media (prefers-color-scheme: dark) {
-  .bg  { fill:   #0d1117 }
-  .ink { fill:   #e6edf3 }
-  .mut { fill:   #9198a1 }
-  .lin { stroke: #7d8590 }
-  .lnf { fill:   #7d8590 }
-  .dgr { fill:   #ff7b72 }
-  .dgs { stroke: #ff7b72 }
-  .acc { fill:   #2ea4ac }
-  .rul { stroke: #30363d }
-  .trf { fill:   #21262d }
-  .mid { fill:   #545c66 }
-}
+.m{font-family:ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace;font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
 </style>
 
-<rect class="bg" x="0" y="0" width="920" height="336" rx="6" fill="#ffffff"/>
+<rect x="0" y="0" width="920" height="752" rx="10" fill="#0d1117"/>
 
-<!-- any gate can stop the change -->
-<path class="dgs" d="M196 54V41M452 54V41M672 54V41M196 40.5H716" fill="none" stroke="#cf222e" stroke-width="1.25"/>
-<path class="dgr" d="M722 40.5l-7-3.75v7.5z" fill="#cf222e"/>
-<text class="dgr" x="730" y="45" font-size="14" fill="#cf222e">blocked</text>
+<text x="34" y="46" font-size="21" font-weight="600" fill="#e6edf3">Where the checks fire</text>
+<text x="34" y="70" font-size="13" fill="#9198a1">Four checks sit between an edit and a public repository. Mostly they miss what they were never handed.</text>
 
-<!-- the path a change takes -->
-<path class="lin" d="M44 72H889" fill="none" stroke="#6e7781" stroke-width="1.25"/>
-<path class="lnf" d="M896 72l-8-4.25v8.5z" fill="#6e7781"/>
+<!-- ============ when each one fires ============ -->
 
-<g class="ink" fill="#1f2328">
-  <circle cx="62" cy="72" r="4.5"/>
-  <circle cx="330" cy="72" r="4.5"/>
-  <circle cx="552" cy="72" r="4.5"/>
-  <circle cx="856" cy="72" r="4.5"/>
-  <rect x="193.5" y="56" width="5" height="32" rx="2.5"/>
-  <rect x="449.5" y="56" width="5" height="32" rx="2.5"/>
-  <rect x="669.5" y="56" width="5" height="32" rx="2.5"/>
+<text x="110" y="114" text-anchor="end" font-size="10.5" fill="#6e7681">what runs</text>
+<text x="110" y="170" text-anchor="end" font-size="10.5" fill="#6e7681">what you do</text>
+
+<text x="453" y="88" text-anchor="middle" font-size="12" fill="#9198a1">these three run on their own</text>
+<text x="782" y="88" text-anchor="middle" font-size="12" fill="#2ea4ac">this one you run by hand</text>
+<path d="M206 99V95H700V99" fill="none" stroke="#3d444d" stroke-width="1"/>
+<path d="M710 99V95H854V99" fill="none" stroke="#2a6b70" stroke-width="1"/>
+
+<g text-anchor="middle" font-size="13" font-weight="600" fill="#e6edf3">
+  <text class="m" x="250" y="114">pre-commit</text>
+  <text class="m" x="450" y="114">pre-push</text>
+  <text x="640" y="114">push protection</text>
+  <text class="m" x="782" y="114" fill="#2ea4ac">publishable check</text>
 </g>
 
-<g class="ink" fill="#1f2328" font-size="14" text-anchor="middle">
-  <text x="62"  y="106">edit</text>
-  <text x="196" y="106" font-weight="600" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">pre-commit</text>
-  <text x="330" y="106">commit</text>
-  <text x="452" y="106" font-weight="600" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">pre-push</text>
-  <text x="552" y="106">push</text>
-  <text x="672" y="106" font-weight="600">push protection</text>
-  <text x="856" y="106" font-weight="600">public</text>
+<path d="M124 140H876" fill="none" stroke="#4d5560" stroke-width="1.25"/>
+<path d="M886 140l-10-5v10z" fill="#4d5560"/>
+
+<g fill="#8b949e">
+  <circle cx="152" cy="140" r="4.5"/>
+  <circle cx="352" cy="140" r="4.5"/>
+  <circle cx="548" cy="140" r="4.5"/>
+</g>
+<circle cx="845" cy="140" r="8.5" fill="none" stroke="#e6edf3" stroke-width="1.25"/>
+<circle cx="845" cy="140" r="4.5" fill="#e6edf3"/>
+
+<g fill="#e6edf3">
+  <rect x="248" y="127" width="4" height="26" rx="2"/>
+  <rect x="448" y="127" width="4" height="26" rx="2"/>
+  <rect x="638" y="127" width="4" height="26" rx="2"/>
+</g>
+<rect x="780" y="127" width="4" height="26" rx="2" fill="#2ea4ac"/>
+
+<g text-anchor="middle" font-size="13.5" fill="#c3ccd6">
+  <text x="152" y="170">edit</text>
+  <text x="352" y="170">commit</text>
+  <text x="548" y="170">push</text>
+</g>
+<text x="886" y="170" text-anchor="end" font-size="13.5" font-weight="600" fill="#e6edf3">make it public</text>
+<text x="886" y="187" text-anchor="end" font-size="10.5" fill="#9198a1">a settings change, not a push</text>
+
+<path d="M34 210H886" fill="none" stroke="#21262d" stroke-width="1"/>
+
+<!-- ============ the repository, and the commit that predates the hooks ============ -->
+
+<text x="34" y="238" font-size="12.5" fill="#c3ccd6">The case drawn here: a personal path went into an old commit, before you had any hook. You deleted the file; the commit stayed.</text>
+
+<text x="240" y="279" text-anchor="end" font-size="13" fill="#e6edf3">your history</text>
+<text x="240" y="294" text-anchor="end" font-size="10.5" fill="#7d8590">oldest commit on the left</text>
+
+<g fill="none" stroke="#8b949e" stroke-width="1.5">
+  <path d="M264 269V262H524V269"/>
+  <path d="M552 269V262H686V269"/>
+</g>
+<text x="394" y="256" text-anchor="middle" font-size="11" fill="#adb6c0">already pushed</text>
+<text x="619" y="256" text-anchor="middle" font-size="11" fill="#adb6c0">not pushed yet</text>
+
+<g fill="#e6edf3">
+  <circle cx="272" cy="282" r="4"/><circle cx="306" cy="282" r="4"/>
+  <circle cx="374" cy="282" r="4"/><circle cx="408" cy="282" r="4"/><circle cx="442" cy="282" r="4"/>
+  <circle cx="476" cy="282" r="4"/><circle cx="510" cy="282" r="4"/>
+  <circle cx="568" cy="282" r="4"/><circle cx="602" cy="282" r="4"/>
+  <circle cx="636" cy="282" r="4"/><circle cx="670" cy="282" r="4"/>
+</g>
+<circle cx="340" cy="282" r="5.5" fill="#ff7b72"/>
+<rect x="723.75" y="277.75" width="8.5" height="8.5" rx="1.5" fill="#e6edf3" transform="rotate(45 728 282)"/>
+
+<text class="m" x="340" y="306" text-anchor="middle" font-size="11" fill="#ff7b72">/Users/you/</text>
+<text x="728" y="306" text-anchor="middle" font-size="11" fill="#7d8590">not committed yet</text>
+<text x="34" y="306" font-size="10.5" fill="#7d8590">each circle = one commit; red = the leak</text>
+
+<path d="M34 324H886" fill="none" stroke="#21262d" stroke-width="1"/>
+
+<text x="34" y="348" font-size="12.5" font-weight="600" fill="#c3ccd6">What each check is handed</text>
+<text x="766" y="348" text-anchor="end" font-size="12" fill="#9aa4b0">shaded = handed to the check, the rest is not</text>
+<text x="884" y="348" text-anchor="end" font-size="11.5" fill="#8b949e">does it catch it?</text>
+
+<!-- row bands, so the eye holds the line across the gap -->
+<g fill="#12181f">
+  <rect x="34" y="362" width="852" height="44" rx="5"/>
+  <rect x="34" y="414" width="852" height="44" rx="5"/>
+  <rect x="34" y="466" width="852" height="44" rx="5"/>
+</g>
+<rect x="34" y="520" width="852" height="50" rx="5" fill="#101c20"/>
+
+<path d="M776 358V572" fill="none" stroke="#262c34" stroke-width="1"/>
+
+<!-- the two group edges the spans are measured against -->
+<g fill="none" stroke="#454e59" stroke-width="1" stroke-dasharray="2 4">
+  <path d="M539 272V570"/>
+  <path d="M699 272V570"/>
 </g>
 
-<g class="mut" fill="#59636e" font-size="12" text-anchor="middle">
-  <text x="196" y="122">your rules</text>
-  <text x="452" y="122">your rules</text>
-  <text x="672" y="122">github, known keys</text>
+<!-- the old commit, dropped down through every reader -->
+<path d="M340 294V566" fill="none" stroke="#ff7b72" stroke-width="1" stroke-dasharray="3 4" opacity="0.55"/>
+
+<!-- pre-commit: handed the change you are committing -->
+<text class="m" x="240" y="380" text-anchor="end" font-size="13.5" font-weight="600" fill="#e6edf3">pre-commit</text>
+<text x="240" y="397" text-anchor="end" font-size="11.5" fill="#8b949e">only what is not committed yet</text>
+<rect x="699" y="372" width="53" height="24" rx="3" fill="#2b323c"/>
+<g fill="#525d6b">
+  <circle cx="272" cy="384" r="3"/><circle cx="306" cy="384" r="3"/>
+  <circle cx="374" cy="384" r="3"/><circle cx="408" cy="384" r="3"/><circle cx="442" cy="384" r="3"/>
+  <circle cx="476" cy="384" r="3"/><circle cx="510" cy="384" r="3"/>
+  <circle cx="568" cy="384" r="3"/><circle cx="602" cy="384" r="3"/>
+  <circle cx="636" cy="384" r="3"/><circle cx="670" cy="384" r="3"/>
+</g>
+<circle cx="340" cy="384" r="4" fill="#7a4340"/>
+<rect x="724.25" y="380.25" width="7.5" height="7.5" rx="1.5" fill="#e6edf3" transform="rotate(45 728 384)"/>
+<text x="790" y="389" font-size="12.5" fill="#9198a1">misses it</text>
+
+<!-- pre-push: handed the commits you are pushing -->
+<text class="m" x="240" y="432" text-anchor="end" font-size="13.5" font-weight="600" fill="#e6edf3">pre-push</text>
+<text x="240" y="449" text-anchor="end" font-size="11.5" fill="#8b949e">the commits you are pushing</text>
+<rect x="539" y="424" width="149" height="24" rx="3" fill="#2b323c"/>
+<g fill="#525d6b">
+  <circle cx="272" cy="436" r="3"/><circle cx="306" cy="436" r="3"/>
+  <circle cx="374" cy="436" r="3"/><circle cx="408" cy="436" r="3"/><circle cx="442" cy="436" r="3"/>
+  <circle cx="476" cy="436" r="3"/><circle cx="510" cy="436" r="3"/>
+</g>
+<g fill="#e6edf3">
+  <circle cx="568" cy="436" r="3.5"/><circle cx="602" cy="436" r="3.5"/>
+  <circle cx="636" cy="436" r="3.5"/><circle cx="670" cy="436" r="3.5"/>
+</g>
+<circle cx="340" cy="436" r="4" fill="#7a4340"/>
+<rect x="724.5" y="432.5" width="7" height="7" rx="1.5" fill="#464e5a" transform="rotate(45 728 436)"/>
+<text x="790" y="441" font-size="12.5" fill="#9198a1">misses it <tspan fill="#adb6c0">*</tspan></text>
+
+<!-- push protection: the same commits, once they reach GitHub -->
+<text x="240" y="484" text-anchor="end" font-size="13.5" font-weight="600" fill="#e6edf3">push protection</text>
+<text x="240" y="501" text-anchor="end" font-size="11.5" fill="#8b949e">the same commits, key formats only</text>
+<rect x="539" y="476" width="149" height="24" rx="3" fill="#2b323c"/>
+<g fill="#525d6b">
+  <circle cx="272" cy="488" r="3"/><circle cx="306" cy="488" r="3"/>
+  <circle cx="374" cy="488" r="3"/><circle cx="408" cy="488" r="3"/><circle cx="442" cy="488" r="3"/>
+  <circle cx="476" cy="488" r="3"/><circle cx="510" cy="488" r="3"/>
+</g>
+<g fill="#e6edf3">
+  <circle cx="568" cy="488" r="3.5"/><circle cx="602" cy="488" r="3.5"/>
+  <circle cx="636" cy="488" r="3.5"/><circle cx="670" cy="488" r="3.5"/>
+</g>
+<circle cx="340" cy="488" r="4" fill="#7a4340"/>
+<rect x="724.5" y="484.5" width="7" height="7" rx="1.5" fill="#464e5a" transform="rotate(45 728 488)"/>
+<text x="790" y="493" font-size="12.5" fill="#9198a1">misses it</text>
+
+<!-- publishable check: handed all of it -->
+<text class="m" x="240" y="541" text-anchor="end" font-size="13.5" font-weight="600" fill="#2ea4ac">publishable check</text>
+<text x="240" y="558" text-anchor="end" font-size="11.5" fill="#8b949e">all commits, plus the uncommitted</text>
+<rect x="258" y="533" width="494" height="24" rx="3" fill="#17565c" stroke="#2ea4ac" stroke-width="1.25"/>
+<g fill="#eafafb">
+  <circle cx="272" cy="545" r="3.5"/><circle cx="306" cy="545" r="3.5"/>
+  <circle cx="374" cy="545" r="3.5"/><circle cx="408" cy="545" r="3.5"/><circle cx="442" cy="545" r="3.5"/>
+  <circle cx="476" cy="545" r="3.5"/><circle cx="510" cy="545" r="3.5"/>
+  <circle cx="568" cy="545" r="3.5"/><circle cx="602" cy="545" r="3.5"/>
+  <circle cx="636" cy="545" r="3.5"/><circle cx="670" cy="545" r="3.5"/>
+</g>
+<circle cx="340" cy="545" r="5" fill="#ff7b72"/>
+<rect x="724" y="541" width="8" height="8" rx="1.5" fill="#eafafb" transform="rotate(45 728 545)"/>
+<text x="790" y="550" font-size="12.5" font-weight="600" fill="#2ea4ac">catches it</text>
+
+<!-- the two notes that qualify the table, kept next to the table -->
+<g font-size="11.5" fill="#8b949e">
+  <text x="34" y="586"><tspan fill="#adb6c0">*</tspan> The one case that changes this: on a very first push there is no remote branch to compare against, so both <tspan class="m">pre-push</tspan> and push protection</text>
+  <text x="34" y="602">are handed the whole history. <tspan class="m">pre-push</tspan> then catches it; push protection still does not, because it only knows key formats.</text>
+  <text x="34" y="618">Any repository you are about to make public has already been pushed, so it is past that point.</text>
+  <text x="34" y="634">GitHub's secret scanning does sweep a public repository's history, but only once it is already public, and only for key formats it knows.</text>
 </g>
 
-<path class="rul" d="M44 142.5H896" fill="none" stroke="#d8dee4" stroke-width="1"/>
+<path d="M34 652H886" fill="none" stroke="#21262d" stroke-width="1"/>
 
-<!-- how much of the repository each one reads -->
-<g class="mut" fill="#59636e" font-size="12">
-  <text x="206" y="170" text-anchor="end">reads</text>
-  <text x="220" y="170">first commit</text>
-  <text x="880" y="170" text-anchor="end">now</text>
-</g>
+<!-- ============ the point ============ -->
 
-<g class="trf" fill="#eaeef2">
-  <rect x="220" y="182" width="660" height="12" rx="3"/>
-  <rect x="220" y="212" width="660" height="12" rx="3"/>
-  <rect x="220" y="242" width="660" height="12" rx="3"/>
-  <rect x="220" y="276" width="660" height="12" rx="3"/>
-</g>
+<text x="34" y="678" font-size="15.5" fill="#e6edf3">Flipping a repository to public fires none of the three automatic checks. Nothing re-reads history first.</text>
 
-<rect class="mid" x="220" y="212" width="602" height="12" rx="3" fill="#9aa4b0"/>
-<text class="mut" x="228" y="208" font-size="12" fill="#59636e">first push only</text>
+<rect x="34" y="692" width="206" height="34" rx="4" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text class="m" x="50" y="714" font-size="14.5" fill="#6e7681">$ <tspan fill="#3fc0c9">publishable check</tspan></text>
 
-<g class="ink" fill="#1f2328">
-  <rect x="854" y="182" width="26" height="12" rx="3"/>
-  <rect x="822" y="212" width="58" height="12" rx="3"/>
-  <rect x="822" y="242" width="58" height="12" rx="3"/>
-</g>
-
-<rect class="acc" x="220" y="276" width="660" height="12" rx="3" fill="#0f7d84"/>
-
-<g font-size="14" text-anchor="end">
-  <text class="ink" x="206" y="192" fill="#1f2328" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">pre-commit</text>
-  <text class="ink" x="206" y="222" fill="#1f2328" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">pre-push</text>
-  <text class="ink" x="206" y="252" fill="#1f2328">push protection</text>
-  <text class="acc" x="206" y="286" fill="#0f7d84" font-weight="600" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace">publishable check</text>
-</g>
-
-<text class="mut" x="220" y="308" font-size="12" fill="#59636e">run this before the first push, while a fix is still just an edit</text>
+<text x="258" y="706" font-size="13" fill="#c3ccd6">Run it yourself, before you flip the repository to public.</text>
+<text x="258" y="723" font-size="11.5" fill="#8b949e"><tspan class="m">publishable</tspan> checks a git repository for things you would not want public; <tspan class="m">check</tspan> is its subcommand.</text>
 </svg>
