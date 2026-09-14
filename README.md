@@ -95,3 +95,12 @@ For a hosted scanner with a dashboard and verified secrets, use [GitGuardian](ht
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+<p>
+  <a href="https://abcastor.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/castor-footer-dark.png">
+      <img src="docs/castor-footer-light.png" width="800" alt="Chip, the Castor beaver, by Castor, we give a dam">
+    </picture>
+  </a>
+</p>
